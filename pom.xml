@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.uncertml</groupId>
 	<artifactId>uncertml</artifactId>
-	<version>2.0-SNAPSHOT</version>
+	<version>2.0-beta</version>
 
 	<parent>
 		<groupId>org.uncertweb</groupId>
@@ -121,7 +120,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
@@ -133,7 +132,7 @@
 	</build>
 
 	<scm>
-		<connection>scm:svn:https://svn.52north.org/svn/geostatistics/main/uncertweb/uncertml-api/trunk</connection>
+		<connection>scm:svn:https://svn.52north.org/svn/geostatistics/main/uncertweb/uncertml-api/tags/uncertml-2.0-beta</connection>
 	</scm>
 
 </project>
