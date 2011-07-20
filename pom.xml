@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.uncertweb</groupId>
 		<artifactId>uncertweb-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0</version>
 		<relativePath>../uncertweb-parent/pom.xml</relativePath>
 	</parent>
 
@@ -64,16 +64,17 @@
 					<sourceGenerationDirectory>src/main/java</sourceGenerationDirectory>
 				</configuration>
 			</plugin>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
+			<!-- the following plugin are inherited from the parent POM's -->
+			<!-- <plugin> -->
+			<!-- <artifactId>maven-jar-plugin</artifactId> -->
+			<!-- </plugin> -->
+			<!-- <plugin> -->
+			<!-- <artifactId>maven-compiler-plugin</artifactId> -->
+			<!-- <configuration> -->
+			<!-- <source>1.6</source> -->
+			<!-- <target>1.6</target> -->
+			<!-- </configuration> -->
+			<!-- </plugin> -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.2</version>
@@ -92,10 +93,11 @@
 				</executions>
 			</plugin>
 		</plugins>
-		
+
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
