@@ -111,6 +111,7 @@ import org.uncertml.x20.LogisticDistributionType;
 import org.uncertml.x20.MeanType;
 import org.uncertml.x20.MedianType;
 import org.uncertml.x20.MixtureModelType;
+import org.uncertml.x20.RealisationDocument;
 import org.uncertml.x20.MixtureModelType.Component;
 import org.uncertml.x20.ModeType;
 import org.uncertml.x20.MomentType;
@@ -209,6 +210,8 @@ public class XMLParser implements IUncertaintyParser {
         } else if (doc instanceof AbstractSampleDocument) {
             // is a realisation
             return parseSample(((AbstractSampleDocument) doc).getAbstractSample());
+        } else if (doc instanceof RealisationDocument){
+        	return parseRealisation(((RealisationDocument)doc).getRealisation());
         }
         throw new UncertaintyParserException("Unknown UncertML type here");
     }
