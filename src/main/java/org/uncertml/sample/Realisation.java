@@ -57,10 +57,6 @@ public class Realisation implements IUncertainty {
      * through processing chains.
      */
     public Realisation(List<Double> values, double weight, String id) {
-        Validate.notNull(values);
-        Validate.notNull(weight);
-        Validate.notNull(id);
-
         Validate.noNullElements(values);
 
         this.values = values;
