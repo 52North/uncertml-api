@@ -41,9 +41,6 @@ public abstract class AbstractSample implements ISample {
      * used to generate the realisations within the sample.
      */
     public AbstractSample(List<Realisation> realisations, String samplingMethodDescription) {
-        Validate.notNull(realisations);
-        Validate.notNull(samplingMethodDescription);
-
         Validate.noNullElements(realisations);
 
         this.realisations = realisations;
