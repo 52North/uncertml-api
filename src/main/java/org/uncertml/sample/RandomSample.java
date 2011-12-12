@@ -8,26 +8,28 @@ import java.util.List;
  * {@URL https://wiki.aston.ac.uk/foswiki/bin/view/UncertWeb/RandomSample}
  * 
  * @see org.uncertml.sample.AbstractSample
- * @see org.uncertml.sample.Realisation
+ * @see org.uncertml.sample.AbstractRealisation
+ * @see org.uncertml.sample.CategoricalRealisation
+ * @see org.uncertml.sample.ContinuousRealisation
  * 
  * @author Matthew Williams
  * @version 2.0
  */
 public class RandomSample extends AbstractSample {
 
-    public RandomSample(Realisation[] realisations, String samplingMethodDescription) {
+    public RandomSample(AbstractRealisation[] realisations, String samplingMethodDescription) {
         super(realisations, samplingMethodDescription);
     }
 
-    public RandomSample(Realisation[] realisations) {
+    public RandomSample(AbstractRealisation[] realisations) {
         super(realisations);
     }
 
-    public RandomSample(List<Realisation> realisations, String samplingMethodDescription) {
+    public RandomSample(List<AbstractRealisation> realisations, String samplingMethodDescription) {
         super(realisations, samplingMethodDescription);
     }
 
-    public RandomSample(List<Realisation> realisations) {
+    public RandomSample(List<AbstractRealisation> realisations) {
         super(realisations);
     }
 }

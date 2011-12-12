@@ -2,14 +2,12 @@ package org.uncertml.sample;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.commons.lang.ArrayUtils;
-import org.uncertml.IUncertainty;
 import org.uncertml.util.Validate;
 
 /**
- * Class representing a realisation. A realisation is comprised of a set of double
- * values, a String identifier and a double weight value, which is optional. The
- * realisation class is used by all UncertML sample types.
+ * Class representing a continuous realisation.
  * 
  * {@URL https://wiki.aston.ac.uk/foswiki/bin/view/UncertWeb/Realisation}
  * 
@@ -20,11 +18,9 @@ import org.uncertml.util.Validate;
  * @author Matthew Williams
  * @version 2.0
  */
-public class Realisation implements IUncertainty {
+public class ContinuousRealisation extends AbstractRealisation {
 
     private List<Double> values;
-    private String id;
-    private double weight;
 
     /**
      * Constructor that takes a <code>List</code> of doubles as the values of
@@ -32,7 +28,7 @@ public class Realisation implements IUncertainty {
      * 
      * @param values the numeric values of a single realisation.
      */
-    public Realisation(List<Double> values) {
+    public ContinuousRealisation(List<Double> values) {
         this(values, Double.NaN, null);
     }
 
@@ -43,7 +39,7 @@ public class Realisation implements IUncertainty {
      * @param values the numeric values of a single realisation.
      * @param weight the weight of this realisation, between 0 - 1.
      */
-    public Realisation(List<Double> values, double weight) {
+    public ContinuousRealisation(List<Double> values, double weight) {
         this(values, weight, null);
     }
 
@@ -56,12 +52,10 @@ public class Realisation implements IUncertainty {
      * @param id a unique identifier for this realisation. Used to track realisations
      * through processing chains.
      */
-    public Realisation(List<Double> values, double weight, String id) {
+    public ContinuousRealisation(List<Double> values, double weight, String id) {
+    	super(weight, id);
         Validate.noNullElements(values);
-
         this.values = values;
-        this.id = id;
-        this.weight = weight;
     }
 
     /**
@@ -70,7 +64,7 @@ public class Realisation implements IUncertainty {
      * 
      * @param values the numeric values of a single realisation.
      */
-    public Realisation(double[] values) {
+    public ContinuousRealisation(double[] values) {
         this(Arrays.asList(ArrayUtils.toObject(values)));
     }
 
@@ -81,7 +75,7 @@ public class Realisation implements IUncertainty {
      * @param values the numeric values of a single realisation.
      * @param weight the weight of this realisation, between 0 - 1.
      */
-    public Realisation(double[] values, double weight) {
+    public ContinuousRealisation(double[] values, double weight) {
         this(Arrays.asList(ArrayUtils.toObject(values)), weight);
     }
 
@@ -94,16 +88,8 @@ public class Realisation implements IUncertainty {
      * @param id a unique identifier for this realisation. Used to track realisations
      * through processing chains.
      */
-    public Realisation(double[] values, double weight, String id) {
+    public ContinuousRealisation(double[] values, double weight, String id) {
         this(Arrays.asList(ArrayUtils.toObject(values)), weight, id);
-    }
-
-    /**
-     * 
-     * @return the unique identifier of this realisation.
-     */
-    public String getId() {
-        return id;
     }
 
     /**
@@ -112,13 +98,5 @@ public class Realisation implements IUncertainty {
      */
     public List<Double> getValues() {
         return values;
-    }
-
-    /**
-     * 
-     * @return the weight of this realisation.
-     */
-    public double getWeight() {
-        return weight;
     }
 }

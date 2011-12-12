@@ -37,7 +37,6 @@ import org.uncertml.distribution.multivariate.MultivariateNormalDistribution;
 import org.uncertml.distribution.multivariate.MultivariateStudentTDistribution;
 import org.uncertml.exception.UncertaintyParserException;
 import org.uncertml.io.json.IUncertaintyDeserializer;
-import org.uncertml.sample.Realisation;
 import org.uncertml.statistic.CategoricalMode;
 import org.uncertml.statistic.CentredMoment;
 import org.uncertml.statistic.CoefficientOfVariation;
@@ -72,6 +71,7 @@ import com.google.gson.JsonParseException;
 import org.uncertml.distribution.continuous.ParetoDistribution;
 import org.uncertml.distribution.multivariate.MultinomialDistribution;
 import org.uncertml.distribution.multivariate.WishartDistribution;
+import org.uncertml.sample.ContinuousRealisation;
 import org.uncertml.sample.RandomSample;
 import org.uncertml.sample.SystematicSample;
 import org.uncertml.sample.UnknownSample;
@@ -316,11 +316,11 @@ public class JSONParser implements IUncertaintyParser {
 
         });
         
-        builder.registerTypeAdapter(Realisation.class, new InstanceCreator<Realisation>() {
+        builder.registerTypeAdapter(ContinuousRealisation.class, new InstanceCreator<ContinuousRealisation>() {
 
             @Override
-            public Realisation createInstance(Type arg0) {
-                return new Realisation(Arrays.asList(new Double[]{0.5}), 0.2, "Test");
+            public ContinuousRealisation createInstance(Type arg0) {
+                return new ContinuousRealisation(Arrays.asList(new Double[]{0.5}), 0.2, "Test");
             }
 
         });
@@ -329,7 +329,7 @@ public class JSONParser implements IUncertaintyParser {
 
             @Override
             public RandomSample createInstance(Type arg0) {
-                return new RandomSample(new Realisation[] {new Realisation(new double[]{0.2})}, "Hello");
+                return new RandomSample(new ContinuousRealisation[] {new ContinuousRealisation(new double[]{0.2})}, "Hello");
             }
 
         });
@@ -337,7 +337,7 @@ public class JSONParser implements IUncertaintyParser {
 
             @Override
             public SystematicSample createInstance(Type arg0) {
-                return new SystematicSample(new Realisation[] {new Realisation(new double[]{0.2})}, "Hello");
+                return new SystematicSample(new ContinuousRealisation[] {new ContinuousRealisation(new double[]{0.2})}, "Hello");
             }
 
         });
@@ -345,7 +345,7 @@ public class JSONParser implements IUncertaintyParser {
 
             @Override
             public UnknownSample createInstance(Type arg0) {
-                return new UnknownSample(new Realisation[] {new Realisation(new double[]{0.2})}, "Hello");
+                return new UnknownSample(new ContinuousRealisation[] {new ContinuousRealisation(new double[]{0.2})}, "Hello");
             }
 
         });

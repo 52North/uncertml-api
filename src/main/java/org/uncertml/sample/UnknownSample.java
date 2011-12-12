@@ -8,26 +8,28 @@ import java.util.List;
  * {@URL https://wiki.aston.ac.uk/foswiki/bin/view/UncertWeb/UnknownSample}
  * 
  * @see org.uncertml.sample.AbstractSample
- * @see org.uncertml.sample.Realisation
+ * @see org.uncertml.sample.AbstractRealisation
+ * @see org.uncertml.sample.CategoricalRealisation
+ * @see org.uncertml.sample.ContinuousRealisation
  * 
  * @author Matthew Williams
  * @version 2.0
  */
 public class UnknownSample extends AbstractSample {
 
-    public UnknownSample(Realisation[] realisations, String samplingMethodDescription) {
+    public UnknownSample(AbstractRealisation[] realisations, String samplingMethodDescription) {
         super(realisations, samplingMethodDescription);
     }
 
-    public UnknownSample(Realisation[] realisations) {
+    public UnknownSample(AbstractRealisation[] realisations) {
         super(realisations);
     }
 
-    public UnknownSample(List<Realisation> realisations, String samplingMethodDescription) {
+    public UnknownSample(List<AbstractRealisation> realisations, String samplingMethodDescription) {
         super(realisations, samplingMethodDescription);
     }
 
-    public UnknownSample(List<Realisation> realisations) {
+    public UnknownSample(List<AbstractRealisation> realisations) {
         super(realisations);
     }
 

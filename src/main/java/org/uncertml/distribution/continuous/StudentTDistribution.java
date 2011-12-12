@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 
-import org.uncertml.sample.Realisation;
+import org.uncertml.sample.ContinuousRealisation;
 import org.uncertml.util.Validate;
 
 /**
@@ -121,7 +121,7 @@ public class StudentTDistribution implements IContinuousDistribution {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public List<Realisation> getRealisations(int numberOfRealisations) {
+    public List<ContinuousRealisation> getRealisations(int numberOfRealisations) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

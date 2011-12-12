@@ -2,6 +2,7 @@ package org.uncertml.sample;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.uncertml.util.Validate;
 
 /**
@@ -17,16 +18,18 @@ import org.uncertml.util.Validate;
 public abstract class AbstractSample implements ISample {
 
     private String samplingMethodDescription;
-    private List<Realisation> realisations;
+    private List<AbstractRealisation> realisations;
 
     /**
      * Constructor that takes a <code>List</code> of realisations.
      * 
-     * @see org.uncertml.sample.Realisation
-     * 
+     * @see org.uncertml.sample.AbstractRealisation
+     * @see org.uncertml.sample.CategoricalRealisation
+     * @see org.uncertml.sample.ContinuousRealisation
+     *  
      * @param realisations a list of <code>Realisation</code> objects.
      */
-    public AbstractSample(List<Realisation> realisations) {
+    public AbstractSample(List<AbstractRealisation> realisations) {
         this(realisations, null);
     }
 
@@ -34,13 +37,15 @@ public abstract class AbstractSample implements ISample {
      * Constructor that takes a <code>List</code> of realisations and a sampling
      * method description.
      * 
-     * @see org.uncertml.sample.Realisation
+     * @see org.uncertml.sample.AbstractRealisation
+     * @see org.uncertml.sample.CategoricalRealisation
+     * @see org.uncertml.sample.ContinuousRealisation
      * 
      * @param realisations a list of <code>Realisation</code> objects.
      * @param samplingMethodDescription a String detailing the sampling method
      * used to generate the realisations within the sample.
      */
-    public AbstractSample(List<Realisation> realisations, String samplingMethodDescription) {
+    public AbstractSample(List<AbstractRealisation> realisations, String samplingMethodDescription) {
         Validate.noNullElements(realisations);
 
         this.realisations = realisations;
@@ -49,12 +54,14 @@ public abstract class AbstractSample implements ISample {
 
     /**
      * Constructor that takes an array of realisations.
-     * 
-     * @see org.uncertml.sample.Realisation
+	 *
+     * @see org.uncertml.sample.AbstractRealisation
+     * @see org.uncertml.sample.CategoricalRealisation
+     * @see org.uncertml.sample.ContinuousRealisation
      * 
      * @param realisations an array of <code>Realisation</code> objects.
      */
-    public AbstractSample(Realisation[] realisations) {
+    public AbstractSample(AbstractRealisation[] realisations) {
         this(Arrays.asList(realisations));
     }
 
@@ -62,13 +69,13 @@ public abstract class AbstractSample implements ISample {
      * Constructor that takes an array of realisations and a sampling
      * method description.
      * 
-     * @see org.uncertml.sample.Realisation
+     * @see org.uncertml.sample.AbstractRealisation
      * 
      * @param realisations an array of <code>Realisation</code> objects.
      * @param samplingMethodDescription a String detailing the sampling method
      * used to generate the realisations within the sample.
      */
-    public AbstractSample(Realisation[] realisations, String samplingMethodDescription) {
+    public AbstractSample(AbstractRealisation[] realisations, String samplingMethodDescription) {
         this(Arrays.asList(realisations), samplingMethodDescription);
     }
 
@@ -76,7 +83,7 @@ public abstract class AbstractSample implements ISample {
      * 
      * @return the realisations contained within this sample.
      */
-    public List<Realisation> getRealisations() {
+    public List<AbstractRealisation> getRealisations() {
         return realisations;
     }
 

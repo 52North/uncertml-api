@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.xmlbeans.XmlError;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
@@ -19,12 +20,12 @@ import org.uncertml.distribution.continuous.ChiSquareDistribution;
 import org.uncertml.distribution.continuous.ExponentialDistribution;
 import org.uncertml.distribution.continuous.FDistribution;
 import org.uncertml.distribution.continuous.GammaDistribution;
-import org.uncertml.distribution.continuous.NormalDistribution;
 import org.uncertml.distribution.continuous.InverseGammaDistribution;
 import org.uncertml.distribution.continuous.LaplaceDistribution;
 import org.uncertml.distribution.continuous.LogNormalDistribution;
 import org.uncertml.distribution.continuous.LogisticDistribution;
 import org.uncertml.distribution.continuous.MixtureModel;
+import org.uncertml.distribution.continuous.NormalDistribution;
 import org.uncertml.distribution.continuous.NormalInverseGammaDistribution;
 import org.uncertml.distribution.continuous.ParetoDistribution;
 import org.uncertml.distribution.continuous.PoissonDistribution;
@@ -35,16 +36,18 @@ import org.uncertml.distribution.discrete.BinomialDistribution;
 import org.uncertml.distribution.discrete.DiscreteUniformDistribution;
 import org.uncertml.distribution.discrete.GeometricDistribution;
 import org.uncertml.distribution.discrete.HypergeometricDistribution;
-import org.uncertml.distribution.multivariate.MultinomialDistribution;
 import org.uncertml.distribution.discrete.NegativeBinomialDistribution;
 import org.uncertml.distribution.multivariate.DirichletDistribution;
+import org.uncertml.distribution.multivariate.MultinomialDistribution;
 import org.uncertml.distribution.multivariate.MultivariateNormalDistribution;
 import org.uncertml.distribution.multivariate.MultivariateStudentTDistribution;
 import org.uncertml.distribution.multivariate.WishartDistribution;
 import org.uncertml.exception.UncertaintyParserException;
+import org.uncertml.sample.AbstractRealisation;
+import org.uncertml.sample.CategoricalRealisation;
+import org.uncertml.sample.ContinuousRealisation;
 import org.uncertml.sample.ISample;
 import org.uncertml.sample.RandomSample;
-import org.uncertml.sample.Realisation;
 import org.uncertml.sample.SystematicSample;
 import org.uncertml.sample.UnknownSample;
 import org.uncertml.statistic.CategoricalMode;
@@ -99,7 +102,6 @@ import org.uncertml.x20.DiscreteProbabilityType;
 import org.uncertml.x20.ExponentialDistributionType;
 import org.uncertml.x20.FDistributionType;
 import org.uncertml.x20.GammaDistributionType;
-import org.uncertml.x20.NormalDistributionType;
 import org.uncertml.x20.GeometricDistributionType;
 import org.uncertml.x20.HypergeometricDistributionType;
 import org.uncertml.x20.InterquartileRangeType;
@@ -111,7 +113,6 @@ import org.uncertml.x20.LogisticDistributionType;
 import org.uncertml.x20.MeanType;
 import org.uncertml.x20.MedianType;
 import org.uncertml.x20.MixtureModelType;
-import org.uncertml.x20.RealisationDocument;
 import org.uncertml.x20.MixtureModelType.Component;
 import org.uncertml.x20.ModeType;
 import org.uncertml.x20.MomentType;
@@ -119,6 +120,7 @@ import org.uncertml.x20.MultinomialDistributionType;
 import org.uncertml.x20.MultivariateNormalDistributionType;
 import org.uncertml.x20.MultivariateStudentTDistributionType;
 import org.uncertml.x20.NegativeBinomialDistributionType;
+import org.uncertml.x20.NormalDistributionType;
 import org.uncertml.x20.NormalInverseGammaDistributionType;
 import org.uncertml.x20.ParetoDistributionType;
 import org.uncertml.x20.PercentileType;
@@ -128,6 +130,7 @@ import org.uncertml.x20.QuantileType;
 import org.uncertml.x20.QuartileType;
 import org.uncertml.x20.RandomSampleType;
 import org.uncertml.x20.RangeType;
+import org.uncertml.x20.RealisationDocument;
 import org.uncertml.x20.RealisationType;
 import org.uncertml.x20.SkewnessType;
 import org.uncertml.x20.StandardDeviationType;
@@ -337,7 +340,7 @@ public class XMLParser implements IUncertaintyParser {
             return parseCovarianceMatrix((CovarianceMatrixType) xb_type);
         } else if (xb_type instanceof RangeType) {
             // Range
-            return parseRage((RangeType) xb_type);
+            return parseRange((RangeType) xb_type);
         } else if (xb_type instanceof CentredMomentType) {
             // centred moment
             return parseCentredMoment((CentredMomentType) xb_type);
@@ -390,7 +393,7 @@ public class XMLParser implements IUncertaintyParser {
         if (desc == null) {
             desc = "";
         }
-        List<Realisation> realisations = new ArrayList<Realisation>();
+        List<AbstractRealisation> realisations = new ArrayList<AbstractRealisation>();
 
         // get the realisations
         for (RealisationType rType : xb_rType.getRealisationArray()) {
@@ -405,7 +408,7 @@ public class XMLParser implements IUncertaintyParser {
         if (desc == null) {
             desc = "";
         }
-        List<Realisation> realisations = new ArrayList<Realisation>();
+        List<AbstractRealisation> realisations = new ArrayList<AbstractRealisation>();
 
         // get the realisations
         for (RealisationType rType : xb_rType.getRealisationArray()) {
@@ -420,7 +423,7 @@ public class XMLParser implements IUncertaintyParser {
         if (desc == null) {
             desc = "";
         }
-        List<Realisation> realisations = new ArrayList<Realisation>();
+        List<AbstractRealisation> realisations = new ArrayList<AbstractRealisation>();
 
         // get the realisations
         for (RealisationType rType : xb_rType.getRealisationArray()) {
@@ -430,12 +433,18 @@ public class XMLParser implements IUncertaintyParser {
         return new UnknownSample(realisations, desc);
     }
 
-    private Realisation parseRealisation(RealisationType xb_rType) {
+    private AbstractRealisation parseRealisation(RealisationType xb_rType) {
         String id = xb_rType.getId();
         double weight = xb_rType.getWeight();
 
         // continuous
-        Realisation r = new Realisation(xb_rType.getValues().getListValue(), weight, id);
+        AbstractRealisation r;
+        if (xb_rType.getValues() != null) {
+        	r = new ContinuousRealisation(xb_rType.getValues().getListValue(), weight, id);
+        }
+        else {
+        	r = new CategoricalRealisation(xb_rType.getCategories().getListValue(), weight, id);
+        }
         return r;
     }
 
@@ -725,7 +734,7 @@ public class XMLParser implements IUncertaintyParser {
         return cm;
     }
 
-    private Range parseRage(RangeType xb_rType) {
+    private Range parseRange(RangeType xb_rType) {
         Range r = new Range(xb_rType.getLower().getListValue(), xb_rType.getUpper().getListValue());
         return r;
     }

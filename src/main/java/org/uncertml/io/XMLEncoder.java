@@ -17,7 +17,6 @@ import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlOptions;
 import org.uncertml.IUncertainty;
 import org.uncertml.distribution.IDistribution;
-import org.uncertml.distribution.continuous.MixtureModel;
 import org.uncertml.distribution.WeightedDistribution;
 import org.uncertml.distribution.categorical.CategoricalUniformDistribution;
 import org.uncertml.distribution.categorical.ICategoricalDistribution;
@@ -27,12 +26,13 @@ import org.uncertml.distribution.continuous.ChiSquareDistribution;
 import org.uncertml.distribution.continuous.ExponentialDistribution;
 import org.uncertml.distribution.continuous.FDistribution;
 import org.uncertml.distribution.continuous.GammaDistribution;
-import org.uncertml.distribution.continuous.NormalDistribution;
 import org.uncertml.distribution.continuous.IContinuousDistribution;
 import org.uncertml.distribution.continuous.InverseGammaDistribution;
 import org.uncertml.distribution.continuous.LaplaceDistribution;
 import org.uncertml.distribution.continuous.LogNormalDistribution;
 import org.uncertml.distribution.continuous.LogisticDistribution;
+import org.uncertml.distribution.continuous.MixtureModel;
+import org.uncertml.distribution.continuous.NormalDistribution;
 import org.uncertml.distribution.continuous.NormalInverseGammaDistribution;
 import org.uncertml.distribution.continuous.ParetoDistribution;
 import org.uncertml.distribution.continuous.PoissonDistribution;
@@ -45,18 +45,20 @@ import org.uncertml.distribution.discrete.DiscreteUniformDistribution;
 import org.uncertml.distribution.discrete.GeometricDistribution;
 import org.uncertml.distribution.discrete.HypergeometricDistribution;
 import org.uncertml.distribution.discrete.IDiscreteDistribution;
-import org.uncertml.distribution.multivariate.MultinomialDistribution;
 import org.uncertml.distribution.discrete.NegativeBinomialDistribution;
 import org.uncertml.distribution.multivariate.DirichletDistribution;
 import org.uncertml.distribution.multivariate.IMultivariateDistribution;
+import org.uncertml.distribution.multivariate.MultinomialDistribution;
 import org.uncertml.distribution.multivariate.MultivariateNormalDistribution;
 import org.uncertml.distribution.multivariate.MultivariateStudentTDistribution;
 import org.uncertml.distribution.multivariate.WishartDistribution;
 import org.uncertml.exception.UncertaintyEncoderException;
 import org.uncertml.exception.UnsupportedUncertaintyTypeException;
+import org.uncertml.sample.AbstractRealisation;
+import org.uncertml.sample.CategoricalRealisation;
+import org.uncertml.sample.ContinuousRealisation;
 import org.uncertml.sample.ISample;
 import org.uncertml.sample.RandomSample;
-import org.uncertml.sample.Realisation;
 import org.uncertml.sample.SystematicSample;
 import org.uncertml.sample.UnknownSample;
 import org.uncertml.statistic.CategoricalMode;
@@ -86,125 +88,8 @@ import org.uncertml.statistic.Skewness;
 import org.uncertml.statistic.StandardDeviation;
 import org.uncertml.statistic.StatisticCollection;
 import org.uncertml.statistic.Variance;
-import org.uncertml.x20.AbstractDistributionDocument;
-import org.uncertml.x20.AbstractDistributionType;
-import org.uncertml.x20.AbstractSampleDocument;
-import org.uncertml.x20.AbstractSummaryStatisticDocument;
-import org.uncertml.x20.AbstractSummaryStatisticType;
-import org.uncertml.x20.AbstractUncertaintyDocument;
-import org.uncertml.x20.BernoulliDistributionDocument;
-import org.uncertml.x20.BernoulliDistributionType;
-import org.uncertml.x20.BetaDistributionDocument;
-import org.uncertml.x20.BetaDistributionType;
-import org.uncertml.x20.BinomialDistributionDocument;
-import org.uncertml.x20.BinomialDistributionType;
-import org.uncertml.x20.CauchyDistributionDocument;
-import org.uncertml.x20.CauchyDistributionType;
-import org.uncertml.x20.CentredMomentDocument;
-import org.uncertml.x20.CentredMomentType;
-import org.uncertml.x20.ChiSquareDistributionDocument;
-import org.uncertml.x20.ChiSquareDistributionType;
-import org.uncertml.x20.CoefficientOfVariationDocument;
-import org.uncertml.x20.CoefficientOfVariationType;
-import org.uncertml.x20.ConfidenceIntervalDocument;
-import org.uncertml.x20.ConfidenceIntervalType;
-import org.uncertml.x20.ConfusionMatrixDocument;
-import org.uncertml.x20.ConfusionMatrixType;
-import org.uncertml.x20.CorrelationDocument;
-import org.uncertml.x20.CorrelationType;
-import org.uncertml.x20.CovarianceMatrixDocument;
-import org.uncertml.x20.CovarianceMatrixType;
-import org.uncertml.x20.CredibleIntervalDocument;
-import org.uncertml.x20.CredibleIntervalType;
-import org.uncertml.x20.DecileDocument;
-import org.uncertml.x20.DecileType;
-import org.uncertml.x20.DirichletDistributionDocument;
-import org.uncertml.x20.DirichletDistributionType;
-import org.uncertml.x20.DiscreteProbabilityDocument;
-import org.uncertml.x20.DiscreteProbabilityType;
-import org.uncertml.x20.ExponentialDistributionDocument;
-import org.uncertml.x20.ExponentialDistributionType;
-import org.uncertml.x20.FDistributionDocument;
-import org.uncertml.x20.FDistributionType;
-import org.uncertml.x20.GammaDistributionDocument;
-import org.uncertml.x20.GammaDistributionType;
-import org.uncertml.x20.NormalDistributionDocument;
-import org.uncertml.x20.NormalDistributionType;
-import org.uncertml.x20.GeometricDistributionDocument;
-import org.uncertml.x20.GeometricDistributionType;
-import org.uncertml.x20.HypergeometricDistributionDocument;
-import org.uncertml.x20.HypergeometricDistributionType;
-import org.uncertml.x20.InterquartileRangeDocument;
-import org.uncertml.x20.InterquartileRangeType;
-import org.uncertml.x20.InverseGammaDistributionDocument;
-import org.uncertml.x20.InverseGammaDistributionType;
-import org.uncertml.x20.KurtosisDocument;
-import org.uncertml.x20.KurtosisType;
-import org.uncertml.x20.LaplaceDistributionDocument;
-import org.uncertml.x20.LaplaceDistributionType;
-import org.uncertml.x20.LogNormalDistributionDocument;
-import org.uncertml.x20.LogNormalDistributionType;
-import org.uncertml.x20.LogisticDistributionDocument;
-import org.uncertml.x20.LogisticDistributionType;
-import org.uncertml.x20.MeanDocument;
-import org.uncertml.x20.MeanType;
-import org.uncertml.x20.MedianDocument;
-import org.uncertml.x20.MedianType;
-import org.uncertml.x20.MixtureModelDocument;
-import org.uncertml.x20.MixtureModelType;
+import org.uncertml.x20.*;
 import org.uncertml.x20.MixtureModelType.Component;
-import org.uncertml.x20.ModeDocument;
-import org.uncertml.x20.ModeType;
-import org.uncertml.x20.MomentDocument;
-import org.uncertml.x20.MomentType;
-import org.uncertml.x20.MultinomialDistributionDocument;
-import org.uncertml.x20.MultinomialDistributionType;
-import org.uncertml.x20.MultivariateNormalDistributionDocument;
-import org.uncertml.x20.MultivariateNormalDistributionType;
-import org.uncertml.x20.MultivariateStudentTDistributionDocument;
-import org.uncertml.x20.MultivariateStudentTDistributionType;
-import org.uncertml.x20.NegativeBinomialDistributionDocument;
-import org.uncertml.x20.NegativeBinomialDistributionType;
-import org.uncertml.x20.NormalInverseGammaDistributionDocument;
-import org.uncertml.x20.NormalInverseGammaDistributionType;
-import org.uncertml.x20.ParetoDistributionDocument;
-import org.uncertml.x20.ParetoDistributionType;
-import org.uncertml.x20.PercentileDocument;
-import org.uncertml.x20.PercentileType;
-import org.uncertml.x20.PoissonDistributionDocument;
-import org.uncertml.x20.PoissonDistributionType;
-import org.uncertml.x20.ProbabilityDocument;
-import org.uncertml.x20.ProbabilityType;
-import org.uncertml.x20.QuantileDocument;
-import org.uncertml.x20.QuantileType;
-import org.uncertml.x20.QuartileDocument;
-import org.uncertml.x20.QuartileType;
-import org.uncertml.x20.RandomSampleDocument;
-import org.uncertml.x20.RandomSampleType;
-import org.uncertml.x20.RangeDocument;
-import org.uncertml.x20.RangeType;
-import org.uncertml.x20.RealisationDocument;
-import org.uncertml.x20.RealisationType;
-import org.uncertml.x20.SkewnessDocument;
-import org.uncertml.x20.SkewnessType;
-import org.uncertml.x20.StandardDeviationDocument;
-import org.uncertml.x20.StandardDeviationType;
-import org.uncertml.x20.StatisticsCollectionDocument;
-import org.uncertml.x20.StatisticsCollectionType;
-import org.uncertml.x20.StudentTDistributionDocument;
-import org.uncertml.x20.StudentTDistributionType;
-import org.uncertml.x20.SystematicSampleDocument;
-import org.uncertml.x20.SystematicSampleType;
-import org.uncertml.x20.UniformDistributionDocument;
-import org.uncertml.x20.UniformDistributionType;
-import org.uncertml.x20.UnknownSampleDocument;
-import org.uncertml.x20.UnknownSampleType;
-import org.uncertml.x20.VarianceDocument;
-import org.uncertml.x20.VarianceType;
-import org.uncertml.x20.WeibullDistributionDocument;
-import org.uncertml.x20.WeibullDistributionType;
-import org.uncertml.x20.WishartDistributionDocument;
-import org.uncertml.x20.WishartDistributionType;
 
 /**
  * XML implementation of an UncertML encoder. Based on the XmlBeans library.
@@ -273,8 +158,8 @@ public class XMLEncoder implements IUncertaintyEncoder {
             doc = encodeStatistic((IStatistic) element);
         } else if (element instanceof ISample) {
             doc = encodeSample((ISample) element);
-        } else if (element instanceof Realisation) {
-            return encodeRealisation((Realisation) element);
+        } else if (element instanceof AbstractRealisation) {
+            return encodeRealisation((AbstractRealisation) element);
         }
         return doc;
     }
@@ -295,7 +180,7 @@ public class XMLEncoder implements IUncertaintyEncoder {
         RandomSampleType xb_rType = xb_rDoc.addNewRandomSample();
 
         xb_rType.setSamplingMethodDescription(element.getSamplingMethodDescription());
-        org.uncertml.x20.RealisationDocument.Realisation r = xb_rType.addNewRealisation();
+        xb_rType.addNewRealisation();
         
         xb_rType.setRealisationArray(this.encodeRealisations(element.getRealisations()));
         return xb_rDoc;
@@ -320,21 +205,26 @@ public class XMLEncoder implements IUncertaintyEncoder {
         return xb_rDoc;
     }
 
-    private RealisationDocument encodeRealisation(Realisation element) {
+    private RealisationDocument encodeRealisation(AbstractRealisation element) {
         RealisationDocument xb_rDoc = RealisationDocument.Factory.newInstance();
         
             RealisationType type = xb_rDoc.addNewRealisation();
             String id = element.getId();
             double weight = element.getWeight();
 
-            if (!id.equals("")) {
+            if (id != null) {
                 type.setId(id);
             }
-            if (weight != Double.NaN) {
+            if (!Double.isNaN(weight)) {
                 type.setWeight(weight);
             }
 
-            type.addNewValues().setListValue(element.getValues());
+            if (element instanceof CategoricalRealisation) {
+            	type.addNewCategories().setListValue(((CategoricalRealisation)element).getCategories());
+            }
+            else {
+            	type.addNewCategories().setListValue(((ContinuousRealisation)element).getValues());
+            }
         
 
         return xb_rDoc;
@@ -343,23 +233,29 @@ public class XMLEncoder implements IUncertaintyEncoder {
     /*
      * Method to encode categorical, discrete and continuous realisations
      */
-    private org.uncertml.x20.RealisationDocument.Realisation[] encodeRealisations(List<Realisation> elements) {
+    private org.uncertml.x20.RealisationDocument.Realisation[] encodeRealisations(List<AbstractRealisation> elements) {
         RealisationDocument xb_rDoc = RealisationDocument.Factory.newInstance();
         org.uncertml.x20.RealisationDocument.Realisation[] types = new org.uncertml.x20.RealisationDocument.Realisation[elements.size()];
         for (int i = 0; i < types.length; i++) {
+        	AbstractRealisation r = elements.get(i);
             org.uncertml.x20.RealisationDocument.Realisation type = xb_rDoc.addNewRealisation();
-            String id = elements.get(i).getId();
-            double weight = elements.get(i).getWeight();
+            String id = r.getId();
+            double weight = r.getWeight();
 
-            if (!id.equals("")) {
-                type.setId(elements.get(i).getId());
+            if (id != null) {
+                type.setId(r.getId());
             }
-            if (weight != Double.NaN) {
-                type.setWeight(elements.get(i).getWeight());
+            if (!Double.isNaN(weight)) {
+                type.setWeight(r.getWeight());
             }
-
-            type.addNewValues().setListValue(elements.get(i).getValues());
-
+            
+            if (r instanceof CategoricalRealisation) {
+            	type.addNewCategories().setListValue(((CategoricalRealisation)r).getCategories());
+            }
+            else {
+            	type.addNewCategories().setListValue(((ContinuousRealisation)r).getValues());
+            }
+            
             types[i] = type;
         }
 

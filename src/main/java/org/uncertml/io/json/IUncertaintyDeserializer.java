@@ -2,11 +2,15 @@ package org.uncertml.io.json;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.uncertml.IUncertainty;
 import org.uncertml.distribution.IDistribution;
 import org.uncertml.distribution.WeightedDistribution;
 import org.uncertml.distribution.continuous.MixtureModel;
+import org.uncertml.sample.AbstractRealisation;
+import org.uncertml.sample.CategoricalRealisation;
+import org.uncertml.sample.ContinuousRealisation;
 import org.uncertml.statistic.IStatistic;
 import org.uncertml.statistic.StatisticCollection;
 
@@ -16,6 +20,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * 
@@ -46,6 +51,38 @@ public class IUncertaintyDeserializer implements JsonDeserializer<IUncertainty> 
                 distributions.add(new WeightedDistribution(weight, distribution));
             }
             return new MixtureModel(distributions);
+        } else if (uncertaintyType.equals("Realisation")) {
+        	// another special case
+        	JsonObject realisationObj = json.get("Realisation").getAsJsonObject();
+        	
+        	// get values/categories
+        	AbstractRealisation realisation;
+        	if (realisationObj.has("categories")) {
+        		List<String> categories = context.deserialize(realisationObj.get("categories"), new TypeToken<List<String>>(){}.getType());
+        		String id = null;
+        		Double weight = Double.NaN;
+        		if (realisationObj.has("id")) {
+        			id = realisationObj.get("id").getAsString();
+        		}
+        		if (realisationObj.has("weight")) {
+        			weight = realisationObj.get("weight").getAsDouble();
+        		}
+        		realisation = new CategoricalRealisation(categories, weight, id);
+        	} else {
+        		List<Double> values = context.deserialize(realisationObj.get("values"), new TypeToken<List<Double>>(){}.getType());
+        		// TODO: fix repeated code
+        		String id = null;
+        		Double weight = Double.NaN;
+        		if (realisationObj.has("id")) {
+        			id = realisationObj.get("id").getAsString();
+        		}
+        		if (realisationObj.has("weight")) {
+        			weight = realisationObj.get("weight").getAsDouble();
+        		}
+        		realisation = new ContinuousRealisation(values, weight, id);
+        	}
+        	
+        	return realisation;
         } else {
             Class<?> uncertaintyClass = getUncertaintyClass(uncertaintyType);
             if (uncertaintyClass != null) {

@@ -12,6 +12,9 @@ import org.uncertml.distribution.WeightedDistribution;
 import org.uncertml.distribution.continuous.MixtureModel;
 import org.uncertml.exception.UncertaintyEncoderException;
 import org.uncertml.exception.UnsupportedUncertaintyTypeException;
+import org.uncertml.sample.AbstractRealisation;
+import org.uncertml.sample.CategoricalRealisation;
+import org.uncertml.sample.ContinuousRealisation;
 import org.uncertml.statistic.IStatistic;
 import org.uncertml.statistic.StatisticCollection;
 
@@ -53,6 +56,7 @@ public class JSONEncoder implements IUncertaintyEncoder {
         // let gson do all the serializing work!
         // problems here are that any IUncertainty objects within the root one will be serialized 
         // in a standard way.
+    	String name = element.getClass().getSimpleName();
         JsonElement uncertainty;
         if (element instanceof StatisticCollection) {
             // special case for collection
@@ -65,7 +69,7 @@ public class JSONEncoder implements IUncertaintyEncoder {
                 members.add(json);
             }
         } else if (element instanceof MixtureModel) {
-            // another special case for a collection\
+            // another special case for a collection
             uncertainty = new JsonObject();
             JsonArray components = new JsonArray();
             uncertainty.getAsJsonObject().add("components", components);
@@ -77,13 +81,32 @@ public class JSONEncoder implements IUncertaintyEncoder {
                 json.add("distribution", dist);
                 components.add(json);
             }
+        } else if (element instanceof AbstractRealisation) {
+        	name = "Realisation";
+        	uncertainty = new JsonObject();
+        	AbstractRealisation r = (AbstractRealisation)element;
+        	
+        	// add values/categories
+        	if (r instanceof CategoricalRealisation) {
+        		uncertainty.getAsJsonObject().add("categories", gson.toJsonTree(((CategoricalRealisation)r).getCategories()));
+        	} else {
+        		uncertainty.getAsJsonObject().add("values", gson.toJsonTree(((ContinuousRealisation)r).getValues()));
+        	}
+        	
+        	// add additional properties
+        	if (r.getId() != null) {
+        		uncertainty.getAsJsonObject().addProperty("id", r.getId());
+        	}
+        	if (!Double.isNaN(r.getWeight())) {
+        		uncertainty.getAsJsonObject().addProperty("weight", r.getWeight());
+        	}
         } else {
             uncertainty = gson.toJsonTree(element);
         }
 
         // add uncertainty to base json object
         JsonObject json = new JsonObject();
-        json.add(element.getClass().getSimpleName(), uncertainty);
+        json.add(name, uncertainty);
         return json;
     }
 
