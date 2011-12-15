@@ -37,7 +37,7 @@ public class JSONEncoder implements IUncertaintyEncoder {
     private Gson gson;
 
     public JSONEncoder() {
-        GsonBuilder builder = new GsonBuilder();
+        GsonBuilder builder = new GsonBuilder().serializeSpecialFloatingPointValues();
         gson = builder.create();
     }
 
