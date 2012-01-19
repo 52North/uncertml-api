@@ -253,7 +253,7 @@ public class XMLEncoder implements IUncertaintyEncoder {
             	type.addNewCategories().setListValue(((CategoricalRealisation)r).getCategories());
             }
             else {
-            	type.addNewCategories().setListValue(((ContinuousRealisation)r).getValues());
+            	type.addNewValues().setListValue(((ContinuousRealisation)r).getValues());
             }
             
             types[i] = type;
