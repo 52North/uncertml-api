@@ -377,12 +377,12 @@ public class XMLParser implements IUncertaintyParser {
 
     private ISample parseSample(AbstractSampleType xb_type) throws UncertaintyParserException {
         // test the document further
-        if (xb_type instanceof RandomSample) {
+        if (xb_type instanceof RandomSampleType) {
             // realisation
             return parseRandomSample((RandomSampleType) xb_type);
-        } else if (xb_type instanceof SystematicSample) {
+        } else if (xb_type instanceof SystematicSampleType) {
             return parseSystematicSample((SystematicSampleType) xb_type);
-        } else if (xb_type instanceof UnknownSample) {
+        } else if (xb_type instanceof UnknownSampleType) {
             return parseUnknownSample((UnknownSampleType) xb_type);
         }
         throw new UncertaintyParserException("Unknown UncertML type " + xb_type.getClass().getSimpleName());
