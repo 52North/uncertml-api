@@ -9,7 +9,6 @@
 		<groupId>org.uncertweb</groupId>
 		<artifactId>uncertweb-parent</artifactId>
 		<version>1.0</version>
-		<relativePath>../uncertweb-parent/pom.xml</relativePath>
 	</parent>
 
 	<packaging>jar</packaging>
@@ -130,6 +129,14 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>UncertWebMavenRepository</id>
+			<name>UncertWeb Maven Repository</name>
+			<url>http://giv-uw.uni-muenster.de/m2/repo</url>
+		</repository>
+	</repositories>
 
 	<scm>
 		<connection>scm:svn:https://svn.52north.org/svn/geostatistics/main/uncertweb/uncertml-api/trunk</connection>
