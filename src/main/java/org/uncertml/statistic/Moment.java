@@ -13,7 +13,7 @@ import org.uncertml.util.Validate;
  * @author Matthew Williams
  * @version 2.0
  */
-public class Moment extends ContinuousStatistic implements IStatistic {
+public class Moment extends ContinuousStatistic {
 
     private int order;
 

@@ -423,7 +423,7 @@ public class JSONParser implements IUncertaintyParser {
 
             @Override
             public Decile createInstance(Type arg0) {
-                return new Decile(10, 0.0);
+                return new Decile(5, 0.0);
             }
 
         });

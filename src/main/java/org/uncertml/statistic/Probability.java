@@ -15,7 +15,7 @@ import org.uncertml.util.Validate;
  * @author Matthew Williams
  * @version 2.0
  */
-public class Probability extends ContinuousStatistic implements IStatistic {
+public class Probability extends ContinuousStatistic {
 
     private List<ProbabilityConstraint> constraints;
 

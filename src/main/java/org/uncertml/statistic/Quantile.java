@@ -18,7 +18,7 @@ import org.uncertml.util.Validate;
  * @author Matthew Williams
  * @version 2.0
  */
-public class Quantile extends ContinuousStatistic implements IStatistic {
+public class Quantile extends ContinuousStatistic {
 
     private double level;
 

@@ -13,7 +13,7 @@ import org.uncertml.util.Validate;
  * @author Matthew Williams
  * @version 2.0
  */
-public class Variance extends ContinuousStatistic implements IStatistic {
+public class Variance extends ContinuousStatistic {
 
     /**
      * Constructor that takes a <code>List</code> of doubles. Each value represents

@@ -15,7 +15,7 @@ import org.apache.commons.lang.ArrayUtils;
  * @author Matthew Williams
  * @version 2.0
  */
-public class Decile extends Quantile implements IStatistic {
+public class Decile extends Quantile {
 
     // valid values for the level parameter.
     private static final int[] VALID_DECILES = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9};

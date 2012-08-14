@@ -1,6 +1,5 @@
 package org.uncertml.sample;
 
-import org.uncertml.IUncertainty;
 
 /**
  * Abstract class for realisations within UncertML.
@@ -14,7 +13,7 @@ import org.uncertml.IUncertainty;
  * @author Richard Jones
  * @version 2.0
  */
-public class AbstractRealisation implements IUncertainty {
+public abstract class AbstractRealisation implements ISample {
 	
     private String id;
     private double weight;

@@ -7,9 +7,10 @@ package org.uncertml.exception;
  * @author Matthew Williams
  * @version 2.0
  */
-public class UncertaintyParserException extends Exception {
+public class UncertaintyParserException extends UncertaintyException {
+	private static final long serialVersionUID = -77603656670033925L;
 
-    public UncertaintyParserException(Throwable cause) {
+	public UncertaintyParserException(Throwable cause) {
         super(cause);
     }
 

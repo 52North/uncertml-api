@@ -13,7 +13,7 @@ import org.uncertml.util.Validate;
  * @author Matthew Williams
  * @version 2.0
  */
-public class CategoricalMode implements IStatistic {
+public class CategoricalMode extends CategoricalStatistic {
 
     private List<String> category;
 

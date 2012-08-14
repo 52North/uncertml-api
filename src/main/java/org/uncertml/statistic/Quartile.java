@@ -14,7 +14,7 @@ import org.apache.commons.lang.ArrayUtils;
  * @author Matthew Williams
  * @version 2.0
  */
-public class Quartile extends Quantile implements IStatistic {
+public class Quartile extends Quantile {
 
     /**
      * Constructor that takes a single level and value, representing a single

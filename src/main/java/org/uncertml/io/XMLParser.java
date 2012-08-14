@@ -87,6 +87,7 @@ import org.uncertml.x20.AbstractSummaryStatisticType;
 import org.uncertml.x20.AbstractUncertaintyDocument;
 import org.uncertml.x20.BetaDistributionType;
 import org.uncertml.x20.BinomialDistributionType;
+import org.uncertml.x20.CategoricalValuesType;
 import org.uncertml.x20.CauchyDistributionType;
 import org.uncertml.x20.CentredMomentType;
 import org.uncertml.x20.ChiSquareDistributionType;
@@ -99,6 +100,7 @@ import org.uncertml.x20.CredibleIntervalType;
 import org.uncertml.x20.DecileType;
 import org.uncertml.x20.DirichletDistributionType;
 import org.uncertml.x20.DiscreteProbabilityType;
+import org.uncertml.x20.DoubleArray;
 import org.uncertml.x20.ExponentialDistributionType;
 import org.uncertml.x20.FDistributionType;
 import org.uncertml.x20.GammaDistributionType;
@@ -107,12 +109,15 @@ import org.uncertml.x20.HypergeometricDistributionType;
 import org.uncertml.x20.InterquartileRangeType;
 import org.uncertml.x20.InverseGammaDistributionType;
 import org.uncertml.x20.KurtosisType;
+import org.uncertml.x20.KurtosisValuesType;
 import org.uncertml.x20.LaplaceDistributionType;
 import org.uncertml.x20.LogNormalDistributionType;
 import org.uncertml.x20.LogisticDistributionType;
 import org.uncertml.x20.MeanType;
 import org.uncertml.x20.MedianType;
 import org.uncertml.x20.MixtureModelType;
+import org.uncertml.x20.NaturalNumbersType;
+import org.uncertml.x20.PositiveNaturalNumbersType;
 import org.uncertml.x20.MixtureModelType.Component;
 import org.uncertml.x20.ModeType;
 import org.uncertml.x20.MomentType;
@@ -122,10 +127,13 @@ import org.uncertml.x20.MultivariateStudentTDistributionType;
 import org.uncertml.x20.NegativeBinomialDistributionType;
 import org.uncertml.x20.NormalDistributionType;
 import org.uncertml.x20.NormalInverseGammaDistributionType;
+import org.uncertml.x20.NormalisedDoubleArray;
 import org.uncertml.x20.ParetoDistributionType;
 import org.uncertml.x20.PercentileType;
 import org.uncertml.x20.PoissonDistributionType;
+import org.uncertml.x20.PositiveRealValuesType;
 import org.uncertml.x20.ProbabilityType;
+import org.uncertml.x20.ProbabilityValuesType;
 import org.uncertml.x20.QuantileType;
 import org.uncertml.x20.QuartileType;
 import org.uncertml.x20.RandomSampleType;
@@ -293,6 +301,15 @@ public class XMLParser implements IUncertaintyParser {
         } else if (xb_type instanceof NegativeBinomialDistributionType) {
             // negative binomial
             return parseNegativeBinomialDistribution((NegativeBinomialDistributionType) xb_type);
+        } else if (xb_type instanceof WishartDistributionType) {
+        	// Wishart
+        	return parseWishartDistribution((WishartDistributionType) xb_type);
+        } else if (xb_type instanceof MultinomialDistributionType) {
+        	// Multinominal
+        	return parseMultinomialDistribution((MultinomialDistributionType) xb_type);
+        } else if (xb_type instanceof ParetoDistributionType) {
+        	// Pareto
+        	return parseParetoDistribution((ParetoDistributionType) xb_type);
         }
         throw new UncertaintyParserException("Unknown UncertML type " + xb_type.getClass().getSimpleName());
     }
@@ -440,91 +457,127 @@ public class XMLParser implements IUncertaintyParser {
         // continuous
         AbstractRealisation r;
         if (xb_rType.getValues() != null) {
-        	r = new ContinuousRealisation(xb_rType.getValues().getListValue(), weight, id);
+        	r = new ContinuousRealisation(
+        			parseDoubleArray(xb_rType.getValues()), weight, id);
         }
         else {
-        	r = new CategoricalRealisation(xb_rType.getCategories().getListValue(), weight, id);
+        	r = new CategoricalRealisation(
+        			parseStringArray(xb_rType.getCategories()), weight, id);
         }
         return r;
     }
 
-    private DirichletDistribution parseDirichletDistribution(DirichletDistributionType xb_ddType) {
-        DirichletDistribution dd = new DirichletDistribution(xb_ddType.getConcentration().getListValue());
+    
+
+	private DirichletDistribution parseDirichletDistribution(DirichletDistributionType xb_ddType) {
+		DirichletDistribution dd = new DirichletDistribution(
+				parseDoubleArray(xb_ddType.getConcentration()));
         return dd;
     }
 
-    private ExponentialDistribution parseExponentialDistribution(ExponentialDistributionType xb_edType) {
-        ExponentialDistribution ed = new ExponentialDistribution(xb_edType.getRate().getListValue());
+	private ExponentialDistribution parseExponentialDistribution(ExponentialDistributionType xb_edType) {
+		ExponentialDistribution ed = new ExponentialDistribution(
+				parseDoubleArray(xb_edType.getRate()));
         return ed;
     }
 
     private GammaDistribution parseGammaDistribution(GammaDistributionType xb_gdType) {
-        GammaDistribution gd = new GammaDistribution(xb_gdType.getShape().getListValue(), xb_gdType.getScale().getListValue());
+		GammaDistribution gd = new GammaDistribution(
+				parseDoubleArray(xb_gdType.getShape()),
+				parseDoubleArray(xb_gdType.getScale()));
         return gd;
     }
 
     private InverseGammaDistribution parseInverseGammaDistribution(InverseGammaDistributionType xb_igdType) {
-        InverseGammaDistribution igd = new InverseGammaDistribution(xb_igdType.getShape().getListValue(), xb_igdType.getScale().getListValue());
+		InverseGammaDistribution igd = new InverseGammaDistribution(
+				parseDoubleArray(xb_igdType.getShape()),
+				parseDoubleArray(xb_igdType.getScale()));
         return igd;
     }
 
     private NormalInverseGammaDistribution parseNormalInverseGammaDistribution(NormalInverseGammaDistributionType xb_nigType) {
-        NormalInverseGammaDistribution nigd = new NormalInverseGammaDistribution(xb_nigType.getMean().getListValue(), xb_nigType.getVarianceScaling().getListValue(), xb_nigType.getShape().getListValue(), xb_nigType.getScale().getListValue());
+		NormalInverseGammaDistribution nigd = new NormalInverseGammaDistribution(
+				parseDoubleArray(xb_nigType.getMean()),
+				parseDoubleArray(xb_nigType.getVarianceScaling()),
+				parseDoubleArray(xb_nigType.getShape()),
+				parseDoubleArray(xb_nigType.getScale()));
         return nigd;
     }
 
     private ParetoDistribution parseParetoDistribution(ParetoDistributionType xb_pdType) {
-        ParetoDistribution pd = new ParetoDistribution(xb_pdType.getScale().getListValue(), xb_pdType.getShape().getListValue());
-        return pd;
+		ParetoDistribution pd = new ParetoDistribution(
+				parseDoubleArray(xb_pdType.getScale()),
+				parseDoubleArray(xb_pdType.getShape()));
+		return pd;
     }
 
     private PoissonDistribution parsePoissonDistribution(PoissonDistributionType xb_pdType) {
-        PoissonDistribution pd = new PoissonDistribution(xb_pdType.getRate().getListValue());
+		PoissonDistribution pd = new PoissonDistribution(
+				parseDoubleArray(xb_pdType.getRate()));
         return pd;
     }
 
     private NormalDistribution parseNormalDistribution(NormalDistributionType xb_gdType) {
-        NormalDistribution gd = new NormalDistribution(xb_gdType.getMean().getListValue(), xb_gdType.getVariance().getListValue());
+		NormalDistribution gd = new NormalDistribution(
+				parseDoubleArray(xb_gdType.getMean()),
+				parseDoubleArray(xb_gdType.getVariance()));
         return gd;
     }
 
     private BinomialDistribution parseBinomialDistribution(BinomialDistributionType xb_bdType) {
-        BinomialDistribution bd = new BinomialDistribution(convertBigIntegers(xb_bdType.getNumberOfTrials().getListValue()), xb_bdType.getProbabilityOfSuccess().getListValue());
-        return bd;
+		BinomialDistribution bd = new BinomialDistribution(
+				convertBigIntegers(xb_bdType.getNumberOfTrials().getListValue()),
+				parseDoubleArray(xb_bdType.getProbabilityOfSuccess()));
+		return bd;
     }
 
-    private LogNormalDistribution parseLogNormalDistribution(LogNormalDistributionType xb_lndType) {
-        LogNormalDistribution lnd = new LogNormalDistribution(xb_lndType.getLogScale().getListValue(), xb_lndType.getShape().getListValue());
+  
+
+	private LogNormalDistribution parseLogNormalDistribution(LogNormalDistributionType xb_lndType) {
+		LogNormalDistribution lnd = new LogNormalDistribution(
+				parseDoubleArray(xb_lndType.getLogScale()),
+				parseDoubleArray(xb_lndType.getShape()));
         return lnd;
     }
 
     private StudentTDistribution parseStudentTDistribution(StudentTDistributionType xb_stdType) {
-        StudentTDistribution std = new StudentTDistribution(xb_stdType.getLocation().getListValue(), xb_stdType.getScale().getListValue(), xb_stdType.getDegreesOfFreedom().getListValue());
+		StudentTDistribution std = new StudentTDistribution(
+				parseDoubleArray(xb_stdType.getLocation()),
+				parseDoubleArray(xb_stdType.getScale()),
+				parseIntArray(xb_stdType.getDegreesOfFreedom()));
         return std;
     }
+    
+    
 
     private IDistribution parseUniformDistribution(UniformDistributionType xb_udType) {
-        if (!xb_udType.isSetNumberOfClasses()) {
-            // continuous
-            UniformDistribution ud = new UniformDistribution(xb_udType.getMinimum().getListValue(), xb_udType.getMaximum().getListValue());
-            return ud;
-        } else {
-            // discrete
-            DiscreteUniformDistribution dud = new DiscreteUniformDistribution(convertBigIntegers(xb_udType.getNumberOfClasses().getListValue()));
-            return dud;
-        }
+		if (!xb_udType.isSetNumberOfClasses()) {
+			// continuous
+			UniformDistribution ud = new UniformDistribution(
+					parseDoubleArray(xb_udType.getMinimum()),
+					parseDoubleArray(xb_udType.getMaximum()));
+			return ud;
+		} else {
+			// discrete
+			DiscreteUniformDistribution dud = new DiscreteUniformDistribution(
+					convertBigIntegers(xb_udType.getNumberOfClasses().getListValue()));
+			return dud;
+		}
     }
 
     private MultivariateNormalDistribution parseMultivariateNormalDistribution(MultivariateNormalDistributionType xb_mgdType) {
-        CovarianceMatrix cm = parseCovarianceMatrix(xb_mgdType.getCovarianceMatrix());
-        MultivariateNormalDistribution mgd = new MultivariateNormalDistribution(xb_mgdType.getMean().getListValue(), cm);
+		MultivariateNormalDistribution mgd = new MultivariateNormalDistribution(
+				parseDoubleArray(xb_mgdType.getMean()),
+				parseCovarianceMatrix(xb_mgdType.getCovarianceMatrix()));
         return mgd;
     }
 
     private MultivariateStudentTDistribution parseMultivariateStudentTDistribution(MultivariateStudentTDistributionType xb_mstdType) {
-        CovarianceMatrix cm = parseCovarianceMatrix(xb_mstdType.getCovarianceMatrix());
-        MultivariateStudentTDistribution mstd = new MultivariateStudentTDistribution(xb_mstdType.getMean().getListValue(), cm, convertBigIntegers(xb_mstdType.getDegreesOfFreedom().getListValue()));
-        return mstd;
+		MultivariateStudentTDistribution mstd = new MultivariateStudentTDistribution(
+				parseDoubleArray(xb_mstdType.getMean()), 
+				parseCovarianceMatrix(xb_mstdType.getCovarianceMatrix()),
+				convertBigIntegers(xb_mstdType.getDegreesOfFreedom().getListValue()));
+		return mstd;
     }
 
     private MixtureModel parseMixtureModel(MixtureModelType xb_mmType) throws UncertaintyParserException {
@@ -539,136 +592,176 @@ public class XMLParser implements IUncertaintyParser {
     }
 
     private BetaDistribution parseBetaDistribution(BetaDistributionType xb_bdType) {
-        BetaDistribution bd = new BetaDistribution(xb_bdType.getAlpha().getListValue(), xb_bdType.getBeta().getListValue());
+		BetaDistribution bd = new BetaDistribution(
+				parseDoubleArray(xb_bdType.getAlpha()),
+				parseDoubleArray(xb_bdType.getBeta()));
         return bd;
     }
 
     private LaplaceDistribution parseLaplaceDistribution(LaplaceDistributionType xb_ldType) {
-        LaplaceDistribution ld = new LaplaceDistribution(xb_ldType.getLocation().getListValue(), xb_ldType.getScale().getListValue());
+		LaplaceDistribution ld = new LaplaceDistribution(
+				parseDoubleArray(xb_ldType.getLocation()),
+				parseDoubleArray(xb_ldType.getScale()));
         return ld;
     }
 
     private CauchyDistribution parseCauchyDistribution(CauchyDistributionType xb_cdType) {
-        CauchyDistribution cd = new CauchyDistribution(xb_cdType.getLocation().getListValue(), xb_cdType.getScale().getListValue());
+		CauchyDistribution cd = new CauchyDistribution(
+				parseDoubleArray(xb_cdType.getLocation()),
+				parseDoubleArray(xb_cdType.getScale()));
         return cd;
     }
 
     private WeibullDistribution parseWeibullDistribution(WeibullDistributionType xb_wdType) {
-        WeibullDistribution wd = new WeibullDistribution(xb_wdType.getScale().getListValue(), xb_wdType.getShape().getListValue());
+		WeibullDistribution wd = new WeibullDistribution(
+				parseDoubleArray(xb_wdType.getScale()),
+				parseDoubleArray(xb_wdType.getShape()));
         return wd;
     }
 
     private WishartDistribution parseWishartDistribution(WishartDistributionType xb_wdType) {
-        CovarianceMatrix cm = parseCovarianceMatrix(xb_wdType.getScaleMatrix());
-        WishartDistribution wd = new WishartDistribution(xb_wdType.getDegreesOfFreedom(), cm);
+		CovarianceMatrix cm = parseCovarianceMatrix(xb_wdType.getScaleMatrix());
+		WishartDistribution wd = new WishartDistribution(
+				xb_wdType.getDegreesOfFreedom(), cm);
         return wd;
     }
 
     private LogisticDistribution parseLogisticDistribution(LogisticDistributionType xb_ldType) {
-        LogisticDistribution ld = new LogisticDistribution(xb_ldType.getLocation().getListValue(), xb_ldType.getScale().getListValue());
+		LogisticDistribution ld = new LogisticDistribution(
+				parseDoubleArray(xb_ldType.getLocation()),
+				parseDoubleArray(xb_ldType.getScale()));
         return ld;
     }
 
     private ChiSquareDistribution parseChiSquareDistribution(ChiSquareDistributionType xb_csdType) {
-        ChiSquareDistribution csd = new ChiSquareDistribution(convertBigIntegers(xb_csdType.getDegreesOfFreedom().getListValue()));
+		ChiSquareDistribution csd = new ChiSquareDistribution(
+				convertBigIntegers(xb_csdType.getDegreesOfFreedom().getListValue()));
         return csd;
     }
 
     private GeometricDistribution parseGeometricDistribution(GeometricDistributionType xb_gdType) {
-        GeometricDistribution gd = new GeometricDistribution(xb_gdType.getProbability().getListValue());
+		GeometricDistribution gd = new GeometricDistribution(
+				parseDoubleArray(xb_gdType.getProbability()));
         return gd;
     }
 
     private HypergeometricDistribution parseHypergeometricDistribution(HypergeometricDistributionType xb_hdType) {
-        HypergeometricDistribution hd = new HypergeometricDistribution(convertBigIntegers(xb_hdType.getNumberOfTrials().getListValue()), convertBigIntegers(xb_hdType.getNumberOfSuccesses().getListValue()), convertBigIntegers(xb_hdType.getPopulationSize().getListValue()));
+        HypergeometricDistribution hd = new HypergeometricDistribution(
+        		convertBigIntegers(xb_hdType.getNumberOfTrials().getListValue()), 
+        		convertBigIntegers(xb_hdType.getNumberOfSuccesses().getListValue()), 
+        		convertBigIntegers(xb_hdType.getPopulationSize().getListValue()));
         return hd;
     }
 
     private FDistribution parseFDistribution(FDistributionType xb_fdType) {
-        FDistribution fd = new FDistribution(xb_fdType.getDenominator().getListValue(), xb_fdType.getNumerator().getListValue());
+		FDistribution fd = new FDistribution(
+				parseIntArray(xb_fdType.getDenominator()),
+				parseIntArray(xb_fdType.getNumerator()));
         return fd;
     }
 
-    private NegativeBinomialDistribution parseNegativeBinomialDistribution(NegativeBinomialDistributionType xb_nbdType) {
-        NegativeBinomialDistribution nbd = new NegativeBinomialDistribution(convertBigIntegers(xb_nbdType.getNumberOfFailures().getListValue()), xb_nbdType.getProbability().getListValue());
+	private NegativeBinomialDistribution parseNegativeBinomialDistribution(NegativeBinomialDistributionType xb_nbdType) {
+        NegativeBinomialDistribution nbd = new NegativeBinomialDistribution(
+        		convertBigIntegers(xb_nbdType.getNumberOfFailures().getListValue()), 
+        		parseDoubleArray(xb_nbdType.getProbability()));
         return nbd;
     }
 
     private Mean parseMean(MeanType xb_mType) {
-        Mean m = new Mean(xb_mType.getValues().getListValue());
+        Mean m = new Mean(
+        		parseDoubleArray(xb_mType.getValues()));
         return m;
     }
 
     private IStatistic parseMode(ModeType xb_mType) {
         if (xb_mType.isSetCategories()) {
             // categorical
-            CategoricalMode cm = new CategoricalMode(xb_mType.getCategories().getListValue());
+			CategoricalMode cm = new CategoricalMode(
+					parseStringArray(xb_mType.getCategories()));
             return cm;
         } else {
             // continuous
-            Mode m = new Mode(xb_mType.getValues().getListValue());
+            Mode m = new Mode(
+            		parseDoubleArray(xb_mType.getValues()));
             return m;
         }
     }
 
     private Median parseMedian(MedianType xb_mType) {
-        Median m = new Median(xb_mType.getValues().getListValue());
+        Median m = new Median(
+        		parseDoubleArray(xb_mType.getValues()));
         return m;
     }
 
     private Quantile parseQuantile(QuantileType xb_qType) {
-        Quantile q = new Quantile(xb_qType.getLevel(), xb_qType.getValues().getListValue());
+		Quantile q = new Quantile(
+				xb_qType.getLevel(),
+				parseDoubleArray(xb_qType.getValues()));
         return q;
     }
 
     private DiscreteProbability parseDiscreteProbability(DiscreteProbabilityType xb_dpType) {
-        DiscreteProbability dp = new DiscreteProbability(xb_dpType.getCategories().getListValue(), xb_dpType.getProbabilities().getListValue());
+		DiscreteProbability dp = new DiscreteProbability(
+				parseStringArray(xb_dpType.getCategories()),
+				parseDoubleArray(xb_dpType.getProbabilities()));
         return dp;
     }
 
     private Variance parseVariance(VarianceType xb_vType) {
-        Variance v = new Variance(xb_vType.getValues().getListValue());
+        Variance v = new Variance(
+        		parseDoubleArray(xb_vType.getValues()));
         return v;
     }
 
     private Probability parseProbability(ProbabilityType xb_pType) {
-        ArrayList<ProbabilityConstraint> constraints = new ArrayList<ProbabilityConstraint>();
-        if (xb_pType.isSetGe()) {
-            // greater or equal
-            ProbabilityConstraint pc = new ProbabilityConstraint(ConstraintType.GREATER_OR_EQUAL, xb_pType.getGe());
-            constraints.add(pc);
-        }
-        if (xb_pType.isSetGt()) {
-            // greater than
-            ProbabilityConstraint pc = new ProbabilityConstraint(ConstraintType.GREATER_THAN, xb_pType.getGt());
-            constraints.add(pc);
-        }
-        if (xb_pType.isSetLe()) {
-            // less or equal
-            ProbabilityConstraint pc = new ProbabilityConstraint(ConstraintType.LESS_OR_EQUAL, xb_pType.getLe());
-            constraints.add(pc);
-        }
-        if (xb_pType.isSetLt()) {
-            // less than
-            ProbabilityConstraint pc = new ProbabilityConstraint(ConstraintType.LESS_THAN, xb_pType.getLt());
-            constraints.add(pc);
-        }
-        Probability p = new Probability(constraints, xb_pType.getProbabilities().getListValue());
-        return p;
+		ArrayList<ProbabilityConstraint> constraints = new ArrayList<ProbabilityConstraint>();
+		if (xb_pType.isSetGe()) {
+			// greater or equal
+			ProbabilityConstraint pc = new ProbabilityConstraint(
+					ConstraintType.GREATER_OR_EQUAL, xb_pType.getGe());
+			constraints.add(pc);
+		}
+		if (xb_pType.isSetGt()) {
+			// greater than
+			ProbabilityConstraint pc = new ProbabilityConstraint(
+					ConstraintType.GREATER_THAN, xb_pType.getGt());
+			constraints.add(pc);
+		}
+		if (xb_pType.isSetLe()) {
+			// less or equal
+			ProbabilityConstraint pc = new ProbabilityConstraint(
+					ConstraintType.LESS_OR_EQUAL, xb_pType.getLe());
+			constraints.add(pc);
+		}
+		if (xb_pType.isSetLt()) {
+			// less than
+			ProbabilityConstraint pc = new ProbabilityConstraint(
+					ConstraintType.LESS_THAN, xb_pType.getLt());
+			constraints.add(pc);
+		}
+		Probability p = new Probability(
+				constraints,
+				parseDoubleArray(xb_pType.getProbabilities()));
+		return p;
     }
 
     private Skewness parseSkewness(SkewnessType xb_sType) {
-        Skewness s = new Skewness(xb_sType.getValues().getListValue());
+        Skewness s = new Skewness(
+        		parseDoubleArray(xb_sType.getValues()));
         return s;
     }
 
     private ConfidenceInterval parseConfidenceInterval(ConfidenceIntervalType xb_ciType) {
-        QuantileType xb_lqType = xb_ciType.getLower();
-        QuantileType xb_uqType = xb_ciType.getUpper();
-        Quantile lower = new Quantile(xb_lqType.getLevel(), xb_lqType.getValues().getListValue());
-        Quantile upper = new Quantile(xb_uqType.getLevel(), xb_uqType.getValues().getListValue());
-        ConfidenceInterval ci = new ConfidenceInterval(lower, upper);
-        return ci;
+		QuantileType xb_lqType = xb_ciType.getLower();
+		QuantileType xb_uqType = xb_ciType.getUpper();
+		Quantile lower = new Quantile(
+				xb_lqType.getLevel(),
+				parseDoubleArray(xb_lqType.getValues()));
+		Quantile upper = new Quantile(
+				xb_uqType.getLevel(),
+				parseDoubleArray(xb_uqType.getValues()));
+		ConfidenceInterval ci = new ConfidenceInterval(lower, upper);
+		return ci;
     }
 
     private StatisticCollection parseStatisticsCollection(StatisticsCollectionType xb_scType) throws UncertaintyParserException {
@@ -686,81 +779,105 @@ public class XMLParser implements IUncertaintyParser {
     }
 
     private ConfusionMatrix parseConfusionMatrix(ConfusionMatrixType xb_cmType) {
-        ConfusionMatrix cm = new ConfusionMatrix(xb_cmType.getSourceCategories().getListValue(), xb_cmType.getTargetCategories().getListValue(), xb_cmType.getCounts().getListValue());
+		ConfusionMatrix cm = new ConfusionMatrix(
+				parseStringArray(xb_cmType.getSourceCategories()),
+				parseStringArray(xb_cmType.getTargetCategories()),
+				parseIntArray(xb_cmType.getCounts()));
         return cm;
     }
 
     private Moment parseMoment(MomentType xb_mType) {
-        Moment m = new Moment(xb_mType.getOrder().intValue(), xb_mType.getValues().getListValue());
+		Moment m = new Moment(xb_mType.getOrder().intValue(),
+				parseDoubleArray(xb_mType.getValues()));
         return m;
     }
 
     private MultinomialDistribution parseMultinomialDistribution(MultinomialDistributionType xb_mdType) {
-        MultinomialDistribution md = new MultinomialDistribution(xb_mdType.getNumberOfTrials().intValue(), xb_mdType.getProbabilities().getListValue());
+		MultinomialDistribution md = new MultinomialDistribution(
+				xb_mdType.getNumberOfTrials().intValue(),
+				parseDoubleArray(xb_mdType.getProbabilities()));
         return md;
     }
 
     private CentredMoment parseCentredMoment(CentredMomentType xb_cmType) {
-        CentredMoment cm = new CentredMoment(xb_cmType.getOrder().intValue(), xb_cmType.getValues().getListValue());
+		CentredMoment cm = new CentredMoment(
+				xb_cmType.getOrder().intValue(),
+				parseDoubleArray(xb_cmType.getValues()));
         return cm;
     }
 
     private Decile parseDecile(DecileType xb_dType) {
-        Decile d = new Decile(xb_dType.getLevel(), xb_dType.getValues().getListValue());
+		Decile d = new Decile(xb_dType.getLevel(),
+				parseDoubleArray(xb_dType.getValues()));
         return d;
     }
 
     private Kurtosis parseKurtosis(KurtosisType xb_kType) {
-        Kurtosis k = new Kurtosis(xb_kType.getValues().getListValue());
+        Kurtosis k = new Kurtosis(parseDoubleArray(xb_kType.getValues()));
         return k;
     }
 
-    private Percentile parsePercentile(PercentileType xb_pType) {
-        Percentile p = new Percentile(xb_pType.getLevel(), xb_pType.getValues().getListValue());
+	private Percentile parsePercentile(PercentileType xb_pType) {
+		Percentile p = new Percentile(xb_pType.getLevel(),
+				parseDoubleArray(xb_pType.getValues()));
         return p;
     }
 
     private CredibleInterval parseCredibleInterval(CredibleIntervalType xb_ciType) {
-        QuantileType xb_lqType = xb_ciType.getLower();
-        QuantileType xb_uqType = xb_ciType.getUpper();
-        Quantile lower = new Quantile(xb_lqType.getLevel(), xb_lqType.getValues().getListValue());
-        Quantile upper = new Quantile(xb_uqType.getLevel(), xb_uqType.getValues().getListValue());
-        CredibleInterval ci = new CredibleInterval(lower, upper);
-        return ci;
-    }
+		QuantileType xb_lqType = xb_ciType.getLower();
+		QuantileType xb_uqType = xb_ciType.getUpper();
+		Quantile lower = new Quantile(
+				xb_lqType.getLevel(),
+				parseDoubleArray(xb_lqType.getValues()));
+		Quantile upper = new Quantile(
+				xb_uqType.getLevel(),
+				parseDoubleArray(xb_uqType.getValues()));
+		CredibleInterval ci = new CredibleInterval(lower, upper);
+		return ci;
+	}
 
     private CovarianceMatrix parseCovarianceMatrix(CovarianceMatrixType xb_cmType) {
-        CovarianceMatrix cm = new CovarianceMatrix(xb_cmType.getDimension().intValue(), xb_cmType.getValues().getListValue());
-        return cm;
+		CovarianceMatrix cm = new CovarianceMatrix(
+				xb_cmType.getDimension().intValue(), 
+				parseDoubleArray(xb_cmType.getValues()));
+		return cm;
     }
 
     private Range parseRange(RangeType xb_rType) {
-        Range r = new Range(xb_rType.getLower().getListValue(), xb_rType.getUpper().getListValue());
-        return r;
+		Range r = new Range(
+				parseDoubleArray(xb_rType.getLower()),
+				parseDoubleArray(xb_rType.getUpper()));
+		return r;
     }
 
     private Correlation parseCorrelation(CorrelationType xb_cType) {
-        Correlation c = new Correlation(xb_cType.getValues().getListValue());
+        Correlation c = new Correlation(parseDoubleArray(xb_cType.getValues()));
         return c;
     }
 
     private CoefficientOfVariation parseCoefficientOfVariation(CoefficientOfVariationType xb_cvType) {
-        CoefficientOfVariation cov = new CoefficientOfVariation(xb_cvType.getValues().getListValue());
+        CoefficientOfVariation cov = new CoefficientOfVariation(
+        		parseDoubleArray(xb_cvType.getValues()));
         return cov;
     }
 
     private InterquartileRange parseInterquartileRange(InterquartileRangeType xb_iqrType) {
-        InterquartileRange iqr = new InterquartileRange(xb_iqrType.getLower().getListValue(), xb_iqrType.getUpper().getListValue());
+        InterquartileRange iqr = new InterquartileRange(
+        		parseDoubleArray(xb_iqrType.getLower()), 
+        		parseDoubleArray(xb_iqrType.getUpper()));
         return iqr;
     }
 
     private Quartile parseQuartile(QuartileType xb_qType) {
-        Quartile q = new Quartile(xb_qType.getLevel(), xb_qType.getValues().getListValue());
+        Quartile q = new Quartile(
+        		xb_qType.getLevel(), 
+        		parseDoubleArray(xb_qType.getValues()));
         return q;
     }
-
+    
     private StandardDeviation parseStandardDeviation(StandardDeviationType xb_sdType) {
-        StandardDeviation sd = new StandardDeviation(xb_sdType.getValues().getListValue());
+        StandardDeviation sd = new StandardDeviation(
+        		parseDoubleArray(xb_sdType.getValues()));
         return sd;
     }
 
@@ -781,7 +898,7 @@ public class XMLParser implements IUncertaintyParser {
         boolean isXmlValid = false;
 
         // A collection instance to hold validation error messages.
-        ArrayList validationMessages = new ArrayList();
+        ArrayList<XmlError> validationMessages = new ArrayList<XmlError>();
 
         // Validate the XML, collecting messages.
         isXmlValid = xml.validate(
@@ -791,7 +908,7 @@ public class XMLParser implements IUncertaintyParser {
         if (!isXmlValid) {
             System.out.println("\nInvalid XML: ");
             for (int i = 0; i < validationMessages.size(); i++) {
-                XmlError error = (XmlError) validationMessages.get(i);
+                XmlError error = validationMessages.get(i);
                 System.out.println(error.getMessage());
                 System.out.println(error.getObjectLocation());
             }
@@ -799,12 +916,50 @@ public class XMLParser implements IUncertaintyParser {
         return isXmlValid;
     }
 
-    private List<Integer> convertBigIntegers(List<BigInteger> list) {
+    private List<Integer> convertBigIntegers(List<?> list) {
         List<Integer> result = new ArrayList<Integer>(list.size());
-        for (BigInteger bi : list) {
-            result.add(bi.intValue());
+        for (Object bi : list) {
+            result.add(((BigInteger)bi).intValue());
         }
         return result;
     }
+    
+   
+	private List<Integer> parseIntArray(PositiveNaturalNumbersType xb) {
+		return parseList(xb.getListValue());
+	}
+
+	private List<Integer> parseIntArray(NaturalNumbersType xb) {
+		return parseList(xb.getListValue());
+	}
+
+	private List<String> parseStringArray(CategoricalValuesType xb) {
+		return parseList(xb.getListValue());
+	}
+
+	private List<Double> parseDoubleArray(DoubleArray xb) {
+		return parseList(xb.getListValue());
+	}
+
+	private List<Double> parseDoubleArray(NormalisedDoubleArray xb) {
+		return parseList(xb.getListValue());
+	}
+
+	private List<Double> parseDoubleArray(KurtosisValuesType xb) {
+		return parseList(xb.getListValue());
+	}
+
+	private List<Double> parseDoubleArray(PositiveRealValuesType xb) {
+		return parseList(xb.getListValue());
+	}
+
+	private List<Double> parseDoubleArray(ProbabilityValuesType xb) {
+		return parseList(xb.getListValue());
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> List<T> parseList(List<?> l) {
+		return (List<T>) l;
+	}
 
 }

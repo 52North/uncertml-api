@@ -16,7 +16,7 @@ import org.uncertml.util.Validate;
  * @author Matthew Williams
  * @version 2.0
  */
-public class DiscreteProbability implements IStatistic {
+public class DiscreteProbability extends DiscreteStatistic {
 
     private List<String> categories;
     private List<Double> probability;

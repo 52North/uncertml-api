@@ -14,7 +14,7 @@ import org.uncertml.util.Validate;
  * @author Matthew Williams
  * @version 2.0
  */
-public abstract class ContinuousStatistic {
+public abstract class ContinuousStatistic implements IStatistic {
 
     private List<Double> values;
 

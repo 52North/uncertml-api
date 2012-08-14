@@ -10,7 +10,7 @@ import java.util.List;
  * @author Matthew Williams
  * @version 2.0
  */
-public class Skewness extends ContinuousStatistic implements IStatistic {
+public class Skewness extends ContinuousStatistic {
 
     /**
      * Constructor that takes a <code>List</code> of doubles. Each value represents

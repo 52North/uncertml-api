@@ -10,7 +10,7 @@ import java.util.List;
  * @author Matthew Williams
  * @version 2.0
  */
-public class CoefficientOfVariation extends ContinuousStatistic implements IStatistic {
+public class CoefficientOfVariation extends ContinuousStatistic {
 
     /**
      * Constructor that takes a single value, representing a single coefficient of variation

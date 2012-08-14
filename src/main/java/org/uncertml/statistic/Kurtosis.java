@@ -13,7 +13,7 @@ import org.uncertml.util.Validate;
  * @author Matthew Williams
  * @version 2.0
  */
-public class Kurtosis extends ContinuousStatistic implements IStatistic {
+public class Kurtosis extends ContinuousStatistic {
 
     /**
      * Constructor that takes a single value, representing a single kurtosis

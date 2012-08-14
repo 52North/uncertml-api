@@ -15,7 +15,7 @@ import org.uncertml.util.Validate;
  * @author Matthew Williams
  * @version 2.0
  */
-public class Percentile extends Quantile implements IStatistic {
+public class Percentile extends Quantile {
 
     /**
      * Constructs a percentile from a specified level and a <code>List</code> of doubles.

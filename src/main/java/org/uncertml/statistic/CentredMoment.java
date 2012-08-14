@@ -12,7 +12,7 @@ import org.apache.commons.lang.ArrayUtils;
  * @author Matthew Williams
  * @version 2.0
  */
-public class CentredMoment extends Moment implements IStatistic {
+public class CentredMoment extends Moment {
 
     /**
      * Constructor that takes a single integer order and double value of a centred moment
