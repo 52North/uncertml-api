@@ -156,10 +156,12 @@ public class XMLEncoder implements IUncertaintyEncoder {
             doc = encodeDistribution((IDistribution) element);
         } else if (element instanceof IStatistic) {
             doc = encodeStatistic((IStatistic) element);
-        } else if (element instanceof ISample) {
-            doc = encodeSample((ISample) element);
-        } else if (element instanceof AbstractRealisation) {
+        }
+        else if (element instanceof AbstractRealisation) {
             return encodeRealisation((AbstractRealisation) element);
+        }
+        else if (element instanceof ISample) {
+            doc = encodeSample((ISample) element);
         }
         return doc;
     }
@@ -172,7 +174,8 @@ public class XMLEncoder implements IUncertaintyEncoder {
         } else if (element instanceof UnknownSample) {
             return encodeUnknownSample((UnknownSample) element);
         } 
-        throw new UnsupportedUncertaintyTypeException(element.getClass().getSimpleName() + " not supported in this version of the UncertML API");
+        
+		throw new UnsupportedUncertaintyTypeException(element.getClass().getSimpleName() + " not supported in this version of the UncertML API");
     }
 
     private RandomSampleDocument encodeRandomSample(RandomSample element) {
