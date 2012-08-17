@@ -25,7 +25,7 @@ public class UncertML {
     private static final String SAMPLE_PATH = "/samples";
     private static final String CATEGORICAL_PATH = "/categorical";
     private static final String CONTINUOUS_PATH = "/continuous";
-    private static final String DISCRETE_PATH = "/dicrete";
+    private static final String DISCRETE_PATH = "/discrete";
     private static final String MUTLIVARIATE_PATH = "/multivariate";
     private static final String EMPTY_STRING = "";
 
