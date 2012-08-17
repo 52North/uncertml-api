@@ -42,7 +42,7 @@ public class UriTestCase extends TestCase {
 		assertEquals(UncertML.getURI(Mean.class), "http://www.uncertml.org/statistics/mean");
 		assertEquals(UncertML.getURI(CategoricalStatistic.class), "http://www.uncertml.org/statistics/categorical");
 		assertEquals(UncertML.getURI(CategoricalMode.class), "http://www.uncertml.org/statistics/categorical-mode");
-		assertEquals(UncertML.getURI(DiscreteStatistic.class), "http://www.uncertml.org/statistics/dicrete");
+		assertEquals(UncertML.getURI(DiscreteStatistic.class), "http://www.uncertml.org/statistics/discrete");
 		assertEquals(UncertML.getURI(DiscreteProbability.class), "http://www.uncertml.org/statistics/discrete-probability");
 	}
 	
@@ -52,7 +52,7 @@ public class UriTestCase extends TestCase {
 		assertEquals(UncertML.getURI(NormalDistribution.class), "http://www.uncertml.org/distributions/normal");
 		assertEquals(UncertML.getURI(ICategoricalDistribution.class), "http://www.uncertml.org/distributions/categorical");
 		assertEquals(UncertML.getURI(CategoricalUniformDistribution.class), "http://www.uncertml.org/distributions/categorical-uniform");
-		assertEquals(UncertML.getURI(IDiscreteDistribution.class), "http://www.uncertml.org/distributions/dicrete");
+		assertEquals(UncertML.getURI(IDiscreteDistribution.class), "http://www.uncertml.org/distributions/discrete");
 		assertEquals(UncertML.getURI(DiscreteUniformDistribution.class), "http://www.uncertml.org/distributions/discrete-uniform");
 		assertEquals(UncertML.getURI(NegativeBinomialDistribution.class), "http://www.uncertml.org/distributions/negative-binomial");
 		assertEquals(UncertML.getURI(IMultivariateDistribution.class), "http://www.uncertml.org/distributions/multivariate");
