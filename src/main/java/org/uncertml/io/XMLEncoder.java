@@ -225,8 +225,14 @@ public class XMLEncoder implements IUncertaintyEncoder {
             if (element instanceof CategoricalRealisation) {
             	type.addNewCategories().setListValue(((CategoricalRealisation)element).getCategories());
             }
-            else {
-            	type.addNewValues().setListValue(((ContinuousRealisation)element).getValues());
+            else if(element instanceof ContinuousRealisation){
+            	ContinuousRealisation cr = (ContinuousRealisation)element;
+            	if(cr.getValues() != null){
+            		type.addNewValues().setListValue(((ContinuousRealisation)element).getValues());
+            	}else{
+            		type.addNewValues().setHref(cr.getReferenceURL().toString());
+            	}
+            	
             }
         
 
@@ -254,9 +260,14 @@ public class XMLEncoder implements IUncertaintyEncoder {
             
             if (r instanceof CategoricalRealisation) {
             	type.addNewCategories().setListValue(((CategoricalRealisation)r).getCategories());
-            }
-            else {
-            	type.addNewValues().setListValue(((ContinuousRealisation)r).getValues());
+            }else if(r instanceof ContinuousRealisation){
+            	ContinuousRealisation cr = (ContinuousRealisation)r;
+            	if(cr.getValues() != null){
+            		type.addNewValues().setListValue(((ContinuousRealisation)r).getValues());
+            	}else{
+            		type.addNewValues().setHref(cr.getReferenceURL().toString());
+            	}
+            	
             }
             
             types[i] = type;

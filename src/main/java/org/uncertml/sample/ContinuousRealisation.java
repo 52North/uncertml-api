@@ -1,5 +1,6 @@
 package org.uncertml.sample;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,7 +22,44 @@ import org.uncertml.util.Validate;
 public class ContinuousRealisation extends AbstractRealisation {
 
     private List<Double> values;
+    private URL referenceURL;
+    
+    /**
+     * Constructor that takes a <code>List</code> of strings as the categories of
+     * the realisation.
+     * 
+     * @param referenceURL the reference URL of the realisation
+     */
+    public ContinuousRealisation(URL referenceURL) {
+        this(referenceURL, Double.NaN, null);
+    }
+    
+    /**
+     * Constructor that takes a <code>List</code> of strings as the categories of
+     * the realisation and a weight, used in weighted samples.
+     * 
+     * @param referenceURL the reference URL of the realisation
+     * @param weight the weight of this realisation, between 0 - 1.
+     */
+    public ContinuousRealisation(URL referenceURL, double weight) {
+        this(referenceURL, weight, null);
+    }
 
+    /**
+     * Constructor that takes a <code>List</code> of strings as the categories of
+     * the realisation, a weight used in weighted samples and an ID.
+     * 
+     * @param referenceURL the reference URL of the realisation
+     * @param weight the weight of this realisation, between 0 - 1.
+     * @param id a unique identifier for this realisation. Used to track realisations
+     * through processing chains.
+     */
+    public ContinuousRealisation(URL referenceURL, double weight, String id) {
+    	super(weight, id);
+        Validate.notNull(referenceURL);        
+        this.referenceURL = referenceURL;
+    }
+    
     /**
      * Constructor that takes a <code>List</code> of doubles as the values of
      * the realisation.
@@ -99,4 +137,8 @@ public class ContinuousRealisation extends AbstractRealisation {
     public List<Double> getValues() {
         return values;
     }
+
+	public URL getReferenceURL() {
+		return referenceURL;
+	}
 }

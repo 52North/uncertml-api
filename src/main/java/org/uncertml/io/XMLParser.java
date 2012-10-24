@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -405,7 +407,7 @@ public class XMLParser implements IUncertaintyParser {
         throw new UncertaintyParserException("Unknown UncertML type " + xb_type.getClass().getSimpleName());
     }
 
-    private ISample parseRandomSample(RandomSampleType xb_rType) {
+    private ISample parseRandomSample(RandomSampleType xb_rType) throws UncertaintyParserException {
         String desc = xb_rType.getSamplingMethodDescription();
         if (desc == null) {
             desc = "";
@@ -420,7 +422,7 @@ public class XMLParser implements IUncertaintyParser {
         return new RandomSample(realisations, desc);
     }
 
-    private ISample parseSystematicSample(SystematicSampleType xb_rType) {
+    private ISample parseSystematicSample(SystematicSampleType xb_rType) throws UncertaintyParserException {
         String desc = xb_rType.getSamplingMethodDescription();
         if (desc == null) {
             desc = "";
@@ -435,7 +437,7 @@ public class XMLParser implements IUncertaintyParser {
         return new SystematicSample(realisations, desc);
     }
 
-    private ISample parseUnknownSample(UnknownSampleType xb_rType) {
+    private ISample parseUnknownSample(UnknownSampleType xb_rType) throws UncertaintyParserException {
         String desc = xb_rType.getSamplingMethodDescription();
         if (desc == null) {
             desc = "";
@@ -450,15 +452,23 @@ public class XMLParser implements IUncertaintyParser {
         return new UnknownSample(realisations, desc);
     }
 
-    private AbstractRealisation parseRealisation(RealisationType xb_rType) {
+    private AbstractRealisation parseRealisation(RealisationType xb_rType) throws UncertaintyParserException {
         String id = xb_rType.getId();
         double weight = xb_rType.getWeight();
 
         // continuous
         AbstractRealisation r;
         if (xb_rType.getValues() != null) {
-        	r = new ContinuousRealisation(
-        			parseDoubleArray(xb_rType.getValues()), weight, id);
+        	if(xb_rType.getValues().getHref() != null && !xb_rType.getValues().getHref().equals("")){
+        		try {
+					r = new ContinuousRealisation(new URL(xb_rType.getValues().getHref()), weight, id);
+				} catch (MalformedURLException e) {
+					throw new UncertaintyParserException(e);
+				}
+        	}else{        		
+        		r = new ContinuousRealisation(
+            			parseDoubleArray(xb_rType.getValues()), weight, id);
+        		}
         }
         else {
         	r = new CategoricalRealisation(
