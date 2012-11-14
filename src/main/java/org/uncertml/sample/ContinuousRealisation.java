@@ -141,4 +141,12 @@ public class ContinuousRealisation extends AbstractRealisation {
 	public URL getReferenceURL() {
 		return referenceURL;
 	}
+	
+	/**
+	 * @ returns boolean if the realisation contains href attribute to a URL
+	 */
+	public boolean isReferenced(){
+		return referenceURL!=null;
+	}
+		
 }
