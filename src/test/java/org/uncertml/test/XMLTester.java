@@ -19,12 +19,14 @@ public class XMLTester {
     public XMLTester() {
     }
 
-    /*
+    
     public static void main(String[] args) {
     XMLTester t = new XMLTester();
-    t.testAll(new File("test/input"), new File("test/output"));
+    t.testAll(new File(args[0]), new File(args[1]));
     }
-     */
+     
+    
+    	
 
     
     /**
